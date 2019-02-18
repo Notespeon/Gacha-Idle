@@ -127,5 +127,6 @@
 #goldOwned {
   color: white;
   float: right;
-  /* feel free to change font-size or anything else */
+  margin-right: 17.5px;
+  font-size: 15px;
 }
