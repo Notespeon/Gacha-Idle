@@ -2,18 +2,60 @@ var gameData = {
 	gold: 500,
 	goldIncome: 0,
 	incomeMulti: 1,
-	charsOwned1: 0,
-	charsOwned2: 0,
-	charsOwned3: 0,
-	shinyOwned1: 0,
-	shinyOwned2: 0,
-	shinyOwned3: 0,
+	charsOwned: [0,0,0],
+	shinyOwned: [0,0,0],
 	shinyCount: 0,
+	shinyChance: 0,
 	crateRoll: 0,
 	shinyRoll: 0,
-	unitsA: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //9 in Pack 1, 8 in Pack 2
-	unitsB: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //5 in Pack 1, 19 in Pack 2
-	unitsC: [0,0,0,0,0,0], //1 in Pack 1, 5 in Pack 2
+	units: [[],[],[]], //2D array for all units, 9+8 1*, 5+19 2*, 1+5 3*
+	unitNames: [["Bob the Boulder (*)",
+	"Rick the Rogue (*)",
+	"Peter the Patient (*)",
+	"Stacy the Storm (*)",
+	"Vicky the Valiant (*)",
+	"Sam the Savage (*)",
+	"Henry the Hungry (*)",
+	"Fae the Freak (*)",
+	"Stan the Silent (*)",
+	"Fin the Fang (*)",
+	"Danny the Danger (*)",
+	"Stephen the Shepherd(*)",
+	"Chloe the Crooked (*)",
+	"Gerald the Gravedigger (*)",
+	"Winston the Wild (*)",
+	"Terry the Thirst (*)",
+	"Troy the Thug (*)"],
+	["Percy the Prince (**)", 
+	"Marvin the Marked (**)", 
+	"Carl the Cruel (**)", 
+	"Fred the Fury (**)",
+	"Ann the Anomaly (**)",
+	"Vanessa the Vulture (**)",
+	"Sophie the Silent (**)",
+	"Ernie the Enigma (**)",
+	"Dobby the Defiant (**)",
+	"Meridith the Monster (**)",
+	"Vernon the Viper (**)",
+	"Charlie the Challenger (**)",
+	"Felice the Flame (**)",
+	"Curt the Colossal (**)",
+	"Figaro the Fearless (**)",
+	"Bron the Bear (**)",
+	"Harry the Horror (**)",
+	"Isaac the Impure (**)",
+	"Wesley the Wonder (**)",
+	"Gabriel the Grim (**)",
+	"Hayden the Hurricane (**)",
+	"Tiny the Titan (**)",
+	"Mia the Menace (**)",
+	"Ethan the Exalted (**)"],
+	["Patrick the Phantom (***)",
+	"Ulysses the Undying (***)",
+	"David the Dragonheart (***)",
+	"Steven the Serpent (***)",
+	"Penelope the Paragon (***)",
+	"Andrew the Army (***)"]],
 	thePhantom: 0,
 	thePrince: 0,
 	theMarked: 0,
@@ -24,7 +66,30 @@ var gameData = {
 	theRogue: 0,
 	thePatient: 0,
 	theStorm: 0,
-	theValiant: 0
+	theValiant: 0,
+	initial: 0
+}
+
+function rollUnit(starNumber, unitNumber) {
+	if (starNumber == 0) {
+		gameData.shinyChance = 100
+	} else if (starNumber == 1) {
+		gameData.shinyChance = 10
+	} else if (starNumber == 2) {
+		gameData.shinyChance = 1
+	}
+	if (gameData.units[starNumber][unitNumber] == 1 && gameData.shinyRoll < gameData.shinyChance) {
+		gameData.units[starNumber][unitNumber] = 2
+		gameData.shinyOwned[starNumber] += 1
+		document.getElementById("helpfulMessage").className = "shiny-alert"
+	} else if (gameData.units[starNumber][unitNumber] == 1 || gameData.units[starNumber][unitNumber] == 2) {
+		document.getElementById("helpfulMessage").className = "dupe-alert"
+	}
+	if (gameData.units[starNumber][unitNumber] == 0) {
+		gameData.units[starNumber][unitNumber] = 1
+		gameData.charsOwned[starNumber] += 1
+	} 
+	document.getElementById("helpfulMessage").innerHTML = "You Received " + gameData.unitNames[starNumber][unitNumber]
 }
 
 function openCrate1() {
@@ -33,203 +98,37 @@ function openCrate1() {
 		gameData.gold -= 100
 		gameData.crateRoll = Math.floor(Math.random() * 1000)
 		gameData.shinyRoll = Math.floor(Math.random() * 1000)
-		//document.getElementById("helpfulMessage").innerHTML = gameData.crateRoll + " Was Your Roll"
+
 		if (gameData.crateRoll == 0) {
-			if (gameData.unitsC[0] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[0] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsC[0] == 1 || gameData.unitsC[0] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsC[0] == 0) {
-				gameData.unitsC[0] = 1
-				gameData.charsOwned3 += 1
-			} 
-			document.getElementById("helpfulMessage").innerHTML = "You Received Patrick the Phantom (***)"
+			rollUnit(2, 0) //3 stars, unit 1
 		} else if (gameData.crateRoll < 20) {
-			if (gameData.unitsB[0] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[0] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsB[0] == 1 || gameData.unitsB[0] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsB[0] == 0) {
-				gameData.unitsB[0] = 1
-				gameData.charsOwned2 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Percy the Prince (**)"
+			rollUnit(1, 0) //2 stars, unit 1
 		} else if (gameData.crateRoll < 40) {
-			if (gameData.unitsB[1] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[1] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsB[1] == 1 || gameData.unitsB[1] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsB[1] == 0) {
-				gameData.unitsB[1] = 1
-				gameData.charsOwned2 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Marvin the Marked (**)"
+			rollUnit(1, 1)
 		} else if (gameData.crateRoll < 60) {
-			if (gameData.unitsB[2] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[2] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsB[2] == 1 || gameData.unitsB[2] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsB[2] == 0) {
-				gameData.unitsB[2] = 1
-				gameData.charsOwned2 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Carl the Cruel (**)"
+			rollUnit(1, 2)
 		} else if (gameData.crateRoll < 80) {
-			if (gameData.unitsB[3] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[3] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsB[3] == 1 || gameData.unitsB[3] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsB[3] == 0) {
-				gameData.unitsB[3] = 1
-				gameData.charsOwned2 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Fred the Fury (**)"
+			rollUnit(1, 3)
 		} else if (gameData.crateRoll < 100) {
-			if (gameData.unitsB[4] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[4] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsB[4] == 1 || gameData.unitsB[4] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsB[4] == 0) {
-				gameData.unitsB[4] = 1
-				gameData.charsOwned2 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Ann the Anomaly (**)"
+			rollUnit(1, 4)
 		} else if (gameData.crateRoll < 200) {
-			if (gameData.unitsA[0] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[0] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[0] == 1 || gameData.unitsA[0] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[0] == 0) {
-				gameData.unitsA[0] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Bob the Boulder (*)"
+			rollUnit(0, 0)
 		} else if (gameData.crateRoll < 300) {
-			if (gameData.unitsA[1] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[1] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[1] == 1 || gameData.unitsA[1] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[1] == 0) {
-				gameData.unitsA[1] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Rick the Rogue (*)"
+			rollUnit(0, 1)
 		} else if (gameData.crateRoll < 400) {
-			if (gameData.unitsA[2] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[2] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[2] == 1 || gameData.unitsA[2] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[2] == 0) {
-				gameData.unitsA[2] = 1
-				gameData.charsOwned1 += 1
-				
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Peter the Patient (*)"
+			rollUnit(0, 2)
 		} else if (gameData.crateRoll < 500) {
-			if (gameData.unitsA[3] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[3] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[3] == 1 || gameData.unitsA[3] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[3] == 0) {
-				gameData.unitsA[3] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Stacy the Storm (*)"
+			rollUnit(0, 3)
 		} else if (gameData.crateRoll < 600) {
-			if (gameData.unitsA[4] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[4] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[4] == 1 || gameData.unitsA[4] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[4] == 0) {
-				gameData.unitsA[4] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Vicky the Valiant (*)"
+			rollUnit(0, 4)
 		} else if (gameData.crateRoll < 700) {
-			if (gameData.unitsA[5] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[5] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[5] == 1 || gameData.unitsA[5] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[5] == 0) {
-				gameData.unitsA[5] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Sam the Savage (*)"
+			rollUnit(0, 5)
 		} else if (gameData.crateRoll < 800) {	
-			if (gameData.unitsA[6] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[6] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[6] == 1 || gameData.unitsA[6] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[6] == 0) {
-				gameData.unitsA[6] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Henry the Hungry (*)"
+			rollUnit(0, 6)
 		} else if (gameData.crateRoll < 900) {
-			if (gameData.unitsA[7] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[7] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[7] == 1 || gameData.unitsA[7] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[7] == 0) {
-				gameData.unitsA[7] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Fae the Freak (*)"
+			rollUnit(0, 7)
 		} else if (gameData.crateRoll < 1000) {
-			if (gameData.unitsA[8] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[8] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage").className = "shiny-alert"
-			} else if (gameData.unitsA[8] == 1 || gameData.unitsA[8] == 2) {
-				document.getElementById("helpfulMessage").className = "dupe-alert"
-			}
-			if (gameData.unitsA[8] == 0) {
-				gameData.unitsA[8] = 1
-				gameData.charsOwned1 += 1
-			}
-			document.getElementById("helpfulMessage").innerHTML = "You Received Stan the Silent (*)"
+			rollUnit(0, 8)
 		}
 		document.getElementById("goldOwned").innerHTML = gameData.gold + " Gold"
 	}
@@ -237,377 +136,97 @@ function openCrate1() {
 
 function openCrate2() {
 	if(gameData.gold >= 10000) {
-		document.getElementById("helpfulMessage2").className = "helpful-message"
+		document.getElementById("helpfulMessage").className = "helpful-message"
 		gameData.gold -= 10000
 		gameData.crateRoll = Math.floor(Math.random() * 1000)
 		gameData.shinyRoll = Math.floor(Math.random() * 1000)
 		if (gameData.crateRoll < 2) {
-			if (gameData.unitsC[1] == 0) {
-				gameData.unitsC[1] = 1
-				gameData.charsOwned3 += 1
-			}
-			if (gameData.unitsC[1] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[1] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Ulysses the Undying (***)"
+			rollUnit(2,1) //3 stars, unit 2
 		} else if (gameData.crateRoll < 4) {
-			if (gameData.unitsC[2] == 0) {
-				gameData.unitsC[2] = 1
-				gameData.charsOwned3 += 1
-			}
-			if (gameData.unitsC[2] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[2] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received David the Dragonheart (***)"
+			rollUnit(2,2)
 		} else if (gameData.crateRoll < 6) {
-			if (gameData.unitsC[3] == 0) {
-				gameData.unitsC[3] = 1
-				gameData.charsOwned3 += 1
-			}
-			if (gameData.unitsC[3] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[3] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Steven the Serpent (***)"
+			rollUnit(2,3)
 		} else if (gameData.crateRoll < 8) {
-			if (gameData.unitsC[4] == 0) {
-				gameData.unitsC[4] = 1
-				gameData.charsOwned3 += 1
-			}
-			if (gameData.unitsC[4] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[4] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Penelope the Paragon (***)"
+			rollUnit(2,4)
 		} else if (gameData.crateRoll < 10) {
-			if (gameData.unitsC[5] == 0) {
-				gameData.unitsC[5] = 1
-				gameData.charsOwned3 += 1
-			}
-			if (gameData.unitsC[5] == 1 && gameData.shinyRoll == 0) {
-				gameData.unitsC[5] = 2
-				gameData.shinyOwned3 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Andrew the Army (***)"
+			rollUnit(2,5)
 		} else if (gameData.crateRoll < 20) {
-			if (gameData.unitsB[5] == 0) {
-				gameData.unitsB[5] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[5] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[5] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Vanessa the Vulture (**)"
+			rollUnit(1,5)
 		} else if (gameData.crateRoll < 30) {
-			if (gameData.unitsB[6] == 0) {
-				gameData.unitsB[6] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[6] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[6] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Sophie the Silent (**)"
+			rollUnit(1,6)
 		} else if (gameData.crateRoll < 40) {
-			if (gameData.unitsB[7] == 0) {
-				gameData.unitsB[7] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[7] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[7] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Ernie the Enigma (**)"
+			rollUnit(1,7)
 		} else if (gameData.crateRoll < 50) {
-			if (gameData.unitsB[8] == 0) {
-				gameData.unitsB[8] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[8] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[8] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Dobby the Defiant (**)"
+			rollUnit(1,8)
 		} else if (gameData.crateRoll < 60) {
-			if (gameData.unitsB[9] == 0) {
-				gameData.unitsB[9] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[9] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[9] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Meridith the Monster (**)"
+			rollUnit(1,9)
 		} else if (gameData.crateRoll < 70) {
-			if (gameData.unitsB[10] == 0) {
-				gameData.unitsB[10] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[10] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[10] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Vernon the Viper (**)"
+			rollUnit(1,10)
 		} else if (gameData.crateRoll < 80) {
-			if (gameData.unitsB[11] == 0) {
-				gameData.unitsB[11] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[11] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[11] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Charlie the Challenger (**)"
+			rollUnit(1,11)
 		} else if (gameData.crateRoll < 90) {
-			if (gameData.unitsB[12] == 0) {
-				gameData.unitsB[12] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[12] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[12] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Felice the Flame (**)"
+			rollUnit(1,12)
 		} else if (gameData.crateRoll < 100) {
-			if (gameData.unitsB[13] == 0) {
-				gameData.unitsB[13] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[13] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[13] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Curt the Colossal (**)"
+			rollUnit(1,13)
 		} else if (gameData.crateRoll < 110) {
-			if (gameData.unitsB[14] == 0) {
-				gameData.unitsB[14] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[14] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[14] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Figaro the Fearless (**)"
+			rollUnit(1,14)
 		} else if (gameData.crateRoll < 120) {
-			if (gameData.unitsB[15] == 0) {
-				gameData.unitsB[15] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[15] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[15] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Bron the Bear (**)"
+			rollUnit(1,15)
 		} else if (gameData.crateRoll < 130) {
-			if (gameData.unitsB[16] == 0) {
-				gameData.unitsB[16] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[16] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[16] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Harry the Horror (**)"
+			rollUnit(1,16)
 		} else if (gameData.crateRoll < 140) {
-			if (gameData.unitsB[17] == 0) {
-				gameData.unitsB[17] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[17] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[17] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Isaac the Impure (**)"
+			rollUnit(1,17)
 		} else if (gameData.crateRoll < 150) {
-			if (gameData.unitsB[18] == 0) {
-				gameData.unitsB[18] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[18] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[18] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Wesley the Wonder (**)"
+			rollUnit(1,18)
 		} else if (gameData.crateRoll < 160) {
-			if (gameData.unitsB[19] == 0) {
-				gameData.unitsB[19] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[19] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[19] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Gabriel the Grim (**)"
+			rollUnit(1,19)
 		} else if (gameData.crateRoll < 170) {
-			if (gameData.unitsB[20] == 0) {
-				gameData.unitsB[20] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[20] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[20] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Hayden the Hurricane (**)"
+			rollUnit(1,20)
 		} else if (gameData.crateRoll < 180) {
-			if (gameData.unitsB[21] == 0) {
-				gameData.unitsB[21] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[21] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[21] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Tiny the Titan (**)"
+			rollUnit(1,21)
 		} else if (gameData.crateRoll < 190) {
-			if (gameData.unitsB[22] == 0) {
-				gameData.unitsB[22] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[22] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[22] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Mia the Menace (**)"
+			rollUnit(1,22)
 		} else if (gameData.crateRoll < 200) {
-			if (gameData.unitsB[23] == 0) {
-				gameData.unitsB[23] = 1
-				gameData.charsOwned2 += 1
-			}
-			if (gameData.unitsB[23] == 1 && gameData.shinyRoll < 10) {
-				gameData.unitsB[23] = 2
-				gameData.shinyOwned2 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Ethan the Exalted (**)"
+			rollUnit(1,23)
 		} else if (gameData.crateRoll < 300) {
-			if (gameData.unitsA[9] == 0) {
-				gameData.unitsA[9] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[9] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[9] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Fin the Fang (*)"
+			rollUnit(0,9)
 		} else if (gameData.crateRoll < 400) {
-			if (gameData.unitsA[10] == 0) {
-				gameData.unitsA[10] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[10] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[10] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Danny the Danger (*)"
+			rollUnit(0,10)
 		} else if (gameData.crateRoll < 500) {
-			if (gameData.unitsA[11] == 0) {
-				gameData.unitsA[11] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[11] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[11] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Stephen the Shepherd(*)"
+			rollUnit(0,11)
 		} else if (gameData.crateRoll < 600) {
-			if (gameData.unitsA[12] == 0) {
-				gameData.unitsA[12] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[12] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[12] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Chloe the Crooked (*)"
+			rollUnit(0,12)
 		} else if (gameData.crateRoll < 700) {
-			if (gameData.unitsA[13] == 0) {
-				gameData.unitsA[13] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[13] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[13] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Gerald the Gravedigger (*)"
+			rollUnit(0,13)
 		} else if (gameData.crateRoll < 800) {
-			if (gameData.unitsA[14] == 0) {
-				gameData.unitsA[14] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[14] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[14] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Winston the Wild (*)"
+			rollUnit(0,14)
 		} else if (gameData.crateRoll < 900) {
-			if (gameData.unitsA[15] == 0) {
-				gameData.unitsA[15] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[15] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[15] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Terry the Thirst (*)"
+			rollUnit(0,15)
 		} else if (gameData.crateRoll < 1000) {
-			if (gameData.unitsA[16] == 0) {
-				gameData.unitsA[16] = 1
-				gameData.charsOwned1 += 1
-			}
-			if (gameData.unitsA[16] == 1 && gameData.shinyRoll < 100) {
-				gameData.unitsA[16] = 2
-				gameData.shinyOwned1 += 1
-				document.getElementById("helpfulMessage2").className = "shiny-alert"
-			}
-			document.getElementById("helpfulMessage2").innerHTML = "You Received Troy the Thug (*)"
+			rollUnit(0,16)
 		}
 		document.getElementById("goldOwned").innerHTML = gameData.gold + " Gold"
 	}
 }
 
 var mainGameLoop = window.setInterval(function() {
-	gameData.shinyCount = gameData.shinyOwned1 + gameData.shinyOwned2 + gameData.shinyOwned3
-	gameData.incomeMulti = (1+(gameData.shinyOwned1*0.1)+gameData.shinyOwned2+(gameData.shinyOwned3*10))
-	gameData.goldIncome = Math.floor((gameData.charsOwned1 + gameData.charsOwned2*5 + gameData.charsOwned3*100)*gameData.incomeMulti)
+	if (gameData.initial == 0) {
+		for (i = 0; i < 3; i++) {
+			for (j = 0; j <25; j++)
+			gameData.units[i][j] = 0
+		}
+		gameData.initial = 1
+	}
+
+	gameData.shinyCount = gameData.shinyOwned[0] + gameData.shinyOwned[1] + gameData.shinyOwned[2]
+	gameData.incomeMulti = (1+(gameData.shinyOwned[0]*0.1)+gameData.shinyOwned[1]+(gameData.shinyOwned[2]*10))
+	gameData.goldIncome = Math.floor((gameData.charsOwned[0] + gameData.charsOwned[1]*5 + gameData.charsOwned[2]*100)*gameData.incomeMulti)
 	gameData.gold += gameData.goldIncome
 	document.getElementById("goldOwned").innerHTML = gameData.gold + " Gold"
-	document.getElementById("charactersOwned1").innerHTML = "You own ("+ gameData.charsOwned1 +"/17) 1 star characters, producing " + gameData.charsOwned1*1 + " gold per second"
-	document.getElementById("charactersOwned2").innerHTML = "You own ("+ gameData.charsOwned2 +"/24) 2 star characters, producing " + gameData.charsOwned2*5 + " gold per second"
-	document.getElementById("charactersOwned3").innerHTML = "You own ("+ gameData.charsOwned3 +"/6) 3 star characters, producing " + gameData.charsOwned3*100 + " gold per second"
-	document.getElementById("shiniesOwned").innerHTML = "You have a " + gameData.incomeMulti + "x multiplier from collecting " + gameData.shinyCount + " rainbow cards"
+	document.getElementById("charactersOwned1").innerHTML = "You own ("+ gameData.charsOwned[0] +"/17) 1 star characters, producing " + gameData.charsOwned[0]*1 + " gold per second"
+	document.getElementById("charactersOwned2").innerHTML = "You own ("+ gameData.charsOwned[1] +"/24) 2 star characters, producing " + gameData.charsOwned[1]*5 + " gold per second"
+	document.getElementById("charactersOwned3").innerHTML = "You own ("+ gameData.charsOwned[2] +"/6) 3 star characters, producing " + gameData.charsOwned[2]*100 + " gold per second"
+	document.getElementById("shiniesOwned").innerHTML = "You have a " + Math.round(gameData.incomeMulti*10)/10 + "x multiplier from collecting " + gameData.shinyCount + " rainbow cards"
 }, 1000)
 
 //var saveGameLoop = window.setInterval(function() {
