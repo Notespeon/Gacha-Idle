@@ -70,6 +70,14 @@ var gameData = {
 	initial: 0
 }
 
+if (gameData.initial == 0) {
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j <25; j++)
+		gameData.units[i][j] = 0
+	}
+	gameData.initial = 1
+}
+
 function tab(tab) {
 	document.getElementById("buyCrateMenu").style.display = "none"
 	document.getElementById("charCollection").style.display = "none"
@@ -225,14 +233,6 @@ function openCrate2() {
 }
 
 var mainGameLoop = window.setInterval(function() {
-	if (gameData.initial == 0) {
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j <25; j++)
-			gameData.units[i][j] = 0
-		}
-		gameData.initial = 1
-	}
-
 	gameData.shinyCount = gameData.shinyOwned[0] + gameData.shinyOwned[1] + gameData.shinyOwned[2]
 	gameData.incomeMulti = (1+(gameData.shinyOwned[0]*0.1)+gameData.shinyOwned[1]+(gameData.shinyOwned[2]*10))
 	gameData.goldIncome = Math.floor((gameData.charsOwned[0] + gameData.charsOwned[1]*5 + gameData.charsOwned[2]*100)*gameData.incomeMulti)
