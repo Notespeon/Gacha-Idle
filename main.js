@@ -70,6 +70,21 @@ var gameData = {
 	initial: 0
 }
 
+function tab(tab) {
+	document.getElementById("buyCrateMenu").style.display = "none"
+	document.getElementById("charCollection").style.display = "none"
+	document.getElementById(tab).style.display = "inline-block"
+	if(tab == 'charCollection') {
+		document.getElementById("collect").className = "active"
+		document.getElementById("cratemenu").className = "inactive"
+	} else if (tab == 'buyCrateMenu') {
+		document.getElementById("cratemenu").className = "active"
+		document.getElementById("collect").className = "inactive"
+	}
+}
+
+tab("buyCrateMenu")
+
 function rollUnit(starNumber, unitNumber) {
 	if (starNumber == 0) {
 		gameData.shinyChance = 100
@@ -99,7 +114,7 @@ function openCrate1() {
 		gameData.crateRoll = Math.floor(Math.random() * 1000)
 		gameData.shinyRoll = Math.floor(Math.random() * 1000)
 
-		if (gameData.crateRoll == 0) {
+		if (gameData.crateRoll < 1) {
 			rollUnit(2, 0) //3 stars, unit 1
 		} else if (gameData.crateRoll < 20) {
 			rollUnit(1, 0) //2 stars, unit 1
@@ -226,7 +241,73 @@ var mainGameLoop = window.setInterval(function() {
 	document.getElementById("charactersOwned1").innerHTML = "You own ("+ gameData.charsOwned[0] +"/17) 1 star characters, producing " + gameData.charsOwned[0]*1 + " gold per second"
 	document.getElementById("charactersOwned2").innerHTML = "You own ("+ gameData.charsOwned[1] +"/24) 2 star characters, producing " + gameData.charsOwned[1]*5 + " gold per second"
 	document.getElementById("charactersOwned3").innerHTML = "You own ("+ gameData.charsOwned[2] +"/6) 3 star characters, producing " + gameData.charsOwned[2]*100 + " gold per second"
-	document.getElementById("shiniesOwned").innerHTML = "You have a " + Math.round(gameData.incomeMulti*10)/10 + "x multiplier from collecting " + gameData.shinyCount + " rainbow cards"
+	document.getElementById("shiniesOwned").innerHTML = "You have a " + Math.round(gameData.incomeMulti*10)/10 + "x multiplier from collecting " + gameData.shinyCount + " rainbow characters, " + gameData.shinyOwned[0] + " *, " + gameData.shinyOwned[1] + " **, " + gameData.shinyOwned[2] + " ***"
+	document.getElementById("totalIncome").innerHTML = "You are currently earning " + gameData.goldIncome + " Gold per second"
+
+	var wrapper = document.getElementById("starterCrateWrapper");
+	var myHTML = '';
+
+	for (i = 0; i < 9; i++) {
+		if(gameData.units[0][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[0][i] + '</span><br/><br/>';
+		} else if (gameData.units[0][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[0][i] + '</span><br/><br/>';
+		} else if (gameData.units[0][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[0][i] + '</b></span><br/><br/>';
+		}
+	}
+	for (i = 0; i < 5; i++) {
+		if(gameData.units[1][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[1][i] + '</span><br/><br/>';
+		} else if (gameData.units[1][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[1][i] + '</span><br/><br/>';
+		} else if (gameData.units[1][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[1][i] + '</b></span><br/><br/>';
+		}
+	}
+	for (i = 0; i < 1; i++) {
+		if(gameData.units[2][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[2][i] + '</span><br/><br/>';
+		} else if (gameData.units[2][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[2][i] + '</span><br/><br/>';
+		} else if (gameData.units[2][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[2][i] + '</b></span><br/><br/>';
+		}
+	}
+	wrapper.innerHTML = myHTML
+
+	var wrapper = document.getElementById("beginnerCrateWrapper");
+	var myHTML = '';
+
+	for (i = 9; i < 17; i++) {
+		if(gameData.units[0][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[0][i] + '</span><br/><br/>';
+		} else if (gameData.units[0][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[0][i] + '</span><br/><br/>';
+		} else if (gameData.units[0][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[0][i] + '</b></span><br/><br/>';
+		}
+	}
+	for (i = 5; i < 24; i++) {
+		if(gameData.units[1][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[1][i] + '</span><br/><br/>';
+		} else if (gameData.units[1][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[1][i] + '</span><br/><br/>';
+		} else if (gameData.units[1][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[1][i] + '</b></span><br/><br/>';
+		}
+	}
+	for (i = 1; i < 6; i++) {
+		if(gameData.units[2][i] == 0) {
+			myHTML += '<span style="color:#b3b3b3">' + gameData.unitNames[2][i] + '</span><br/><br/>';
+		} else if (gameData.units[2][i] == 1) {
+			myHTML += '<span style="color:black">' + gameData.unitNames[2][i] + '</span><br/><br/>';
+		} else if (gameData.units[2][i] == 2) {
+			myHTML += '<span style="color:red"><b>' + gameData.unitNames[2][i] + '</b></span><br/><br/>';
+		}
+	}
+	wrapper.innerHTML = myHTML
+
 }, 1000)
 
 //var saveGameLoop = window.setInterval(function() {

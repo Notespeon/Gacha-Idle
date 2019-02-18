@@ -10,16 +10,49 @@
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 			This is an alert box.
 		</div>-->
-		<p id="goldOwned">500 Gold</p>
-		<button onclick="openCrate1() ">Open Starter Crate (100 Gold)</button>
-		<button id="helpfulMessage" class="helpful-message">Helpful Messages Appear Here</button>
-		<p> </p>
-		<button onclick="openCrate2()">Open Beginner Crate (10000 Gold)</button>
-		<!--<button id="helpfulMessage2" class="helpful-message">Helpful Messages Appear Here</button>-->
-		<p id="charactersOwned1">You own (0/17) 1 star characters, producing 0 gold per second</p>
-		<p id="charactersOwned2">You own (0/24) 2 star characters, producing 0 gold per second</p>
-		<p id="charactersOwned3">You own (0/6) 3 star characters, producing 0 gold per second</p>
-		<p id="shiniesOwned">You have a 1x multiplier from collecting 0 rainbow cards</p>
+
+		<div class="topnav" id="navigateButtons">
+			<a id="cratemenu" class="active" onclick="tab('buyCrateMenu')" href=#Shop>Shop</a>
+			<a id="collect" onclick="tab('charCollection')" href=#Collection>Collection</a>
+			<a id="futureContent" href="#FutureContent">Future Content</a>
+		</div>
+		<div id="buyCrateMenu">
+			<h1 id="goldOwned">500 Gold</h1>
+			<button id="helpfulMessage" class="helpful-message">Helpful Messages Appear Here</button>
+			<p></p>
+			<button onclick="openCrate1() ">Open Starter Crate (100 Gold)</button>
+			<div class="tooltip">
+				<button>?</button>
+				<span class="tooltiptext">9 *, 5 **, 1 ***</span>
+			</div>
+			<p></p>
+			<button onclick="openCrate2()">Open Beginner Crate (10000 Gold)</button>
+			<div class="tooltip">
+				<button>?</button>
+				<span class="tooltiptext">8 *, 19 **, 5 ***</span>
+			</div>
+			
+			<p> </p>
+			
+			<!--<button id="helpfulMessage2" class="helpful-message">Helpful Messages Appear Here</button>-->
+			<p> </p>
+			<p id="charactersOwned1">You own (0/17) 1 star characters, producing 0 gold per second</p>
+				
+			<p id="charactersOwned2">You own (0/24) 2 star characters, producing 0 gold per second</p>
+			<p id="charactersOwned3">You own (0/6) 3 star characters, producing 0 gold per second</p>
+			<p id="shiniesOwned">You have a 1x multiplier from collecting 0 rainbow characters, 0 *, 0 **, 0 ***</p>
+			<p id="totalIncome">You are currently earning 0 Gold per second</p>
+		</div>
+		<div id="charCollection"> 
+			<h1 class="starterCrateText">Starter Crate</h1>
+			
+			<div class ="starterCrateWrapper" id ="starterCrateWrapper">
+			</div>
+			<h1 class="beginnerCrateText">Beginner Crate</h1>
+			
+			<div class ="beginnerCrateWrapper" id ="beginnerCrateWrapper">
+			</div>
+		</div>
 		<script src="main.js" charset="utf-8" type="text/javascript"></script>
 	</body>
 </html>
