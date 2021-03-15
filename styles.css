@@ -123,3 +123,10 @@
 .closebtn:hover {
   color: black;
 }
+
+#goldOwned {
+  color: white;
+  float: right;
+  margin-right: 17.5px;
+  font-size: 15px;
+}
